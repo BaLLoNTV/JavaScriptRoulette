@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1251" />
+<style>
+body {
+  font-family: "Lato", sans-serif;
+  font-size: 40px;
+  transition: background-color .5s;
+  overflow: auto;
+}
+#AllHandler
+{
+width: 1280px;
+height: 720px;
+overflow: hidden;
+}
+p {
+    display: block;
+	width: 60px;
+	height: 100%;
+    margin-block-start: 0px;
+    margin-block-end: 0px;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+}
+.container
+{
+overflow: hidden;
+display: inline-block;
+border: 1px solid #6e6e6e;
+white-space: nowrap;
+}
+#PointerHandler
+{
+width: 60px;
+height: 100%;
+}
+#RouletteHandler
+{
+margin: 0px 0px 0px -2px;
+width: 1200px;
+height: 100%;
+}
+ul
+{
+padding: 0px 0px 0px 0px;
+margin-block-start: 0px;
+margin-block-end: 0px;
+margin-inline-start: 0px;
+margin-inline-end: 0px;
+}
+li
+{
+display: block;
+overflow: hidden;
+white-space: nowrap;
+list-style-type: none;
+border:1px solid #000;
+width: 100%;
+height: 55px;
+padding: 8px 0px 0px 0px;
+margin: 0px 0px 0px 0px;
+}
+</style>
+</head>
+
+<body>
+
+  <input type="file" id="openfile" />
+  <button onclick="ShowArray()">Massiv v console</button>
+  <button onclick="PickFromArray()">Krutit ruletku</button>
+  <div id="AllHandler" style="border:1px solid #000">
+  <div id="PointerHandler" class="container" >
+  <p id="canvas1" style="text-align: left"><canvas width="60" height="720" id="mycanvas" onmousedown="clickHandler(event)" style="border:1px solid #000"></canvas></p>
+  </div>
+  <div id="RouletteHandler" class="container" >
+  <ul id="GameNameHandler">
+  </ul>
+  </div>
+  </div>
+  <script type="text/javascript">
+	var fileInput = document.getElementById("openfile");
+	var textToArray, timerId = [];
+	var MyCan0, MyCan2D, k, x, RouletteSpeed = [-56, -9, -6,-3,-1,0];
+	
+	document.addEventListener('DOMContentLoaded',function(){
+	MyCan0 = document.getElementById("mycanvas");
+	MyCan2D = MyCan0.getContext("2d");});
+	
+    document.getElementById("openfile").addEventListener('change', function() {
+		var reader = new FileReader();
+		reader.readAsText(fileInput.files[0],'CP1251');
+		reader.onload = function (e) {
+				textToArray = reader.result.split("\n");
+				k=textToArray.length;
+				console.log(k);
+		};
+		DrawPreGameView();
+	});
+	
+	function ShowArray() {
+	console.log(textToArray);
+	}
+	
+	function PickFromArray() {
+	console.log('.');
+	var list = document.getElementById("GameNameHandler");
+	while (list.firstChild) {
+    list.removeChild(list.firstChild);
+	}
+	console.log('..');
+	for(var i=textToArray.length,j=0;i<(k+12);i++,j++){
+	if(j==k){j=0;}
+	textToArray.push(textToArray[j]);
+	console.log(textToArray[j]);
+	}
+	for(i=0;i<textToArray.length;i++){
+	var newLi = document.createElement('li');
+	newLi.innerHTML = textToArray[i];
+	list.appendChild(newLi);
+	}
+	console.log(k);
+	RouletteTimers();
+	}
+	
+	
+	function RouletteTimers() {
+	var speed = 0, time = 0;
+	x=0;
+	console.log(k*(-65)); 
+	timerId.push( setInterval(function() { 	var list = document.getElementById("GameNameHandler"); x=x+RouletteSpeed[speed]; if(x<=k*(-65)){console.log(x);console.log(k);console.log(k*(-65)); x=0;} list.style.transform = 'translateY('+ x +'px)'; }, 1));
+	console.log('translateY('+ x +'px)'); 
+	time = getRandomInt( 3000, 9000 );
+	if(k>180){
+	console.log(time);
+	timerId.push( setTimeout(function() { speed = 1; }, time));
+	time += getRandomInt( 2000, 4500 );
+	}
+	else
+	{speed=1;}
+	console.log(time);
+	timerId.push( setTimeout(function() { speed = 2; }, time));
+	time += getRandomInt( 1000, 2500 );
+	console.log(time);
+	timerId.push( setTimeout(function() { speed = 3; }, time));
+	time += getRandomInt( 500, 1800 );
+	console.log(time);
+	timerId.push( setTimeout(function() { speed = 4; }, time));
+	time += getRandomInt( 1300, 2300 );
+	console.log(time);
+	timerId.push( setTimeout(function() { speed = 5; }, time));
+	}
+	
+	
+	function getRandomInt(min, max) {
+	return Math.floor(Math.random() * (max - min)) + min;
+	}
+	
+	function DrawPreGameView() {
+	MyCan2D.beginPath(); 
+	MyCan2D.clearRect(0,0,MyCan0.width,MyCan0.height);
+	MyCan2D.font = 'bold 80px sans-serif';
+	MyCan2D.fillStyle = 'black';
+	MyCan2D.lineWidth = 3;
+	MyCan2D.moveTo(30, 340);
+	MyCan2D.lineTo(50, 360);
+	MyCan2D.lineTo(30, 380);
+	MyCan2D.lineTo(30, 340);
+	MyCan2D.lineTo(50, 360);
+	MyCan2D.stroke();
+	MyCan2D.fill();
+	//MyCan2D.fillText( "Start!" ,MyCan0.width / 2 - 100 ,MyCan0.height / 2 - (x+20));
+	}
+	
+	
+  </script>
+</body>
+</html>
